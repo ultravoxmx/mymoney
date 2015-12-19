@@ -1,0 +1,516 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="2.0" xmlns:edmx="http://schemas.microsoft.com/ado/2008/10/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="MyMoneyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/02/edm/ssdl">
+        <EntityType Name="AddebitoTransazioni">
+          <Key>
+            <PropertyRef Name="AddebitoTransazioneID" />
+          </Key>
+          <Property Name="AddebitoTransazioneID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TipoTransazioneID" Type="int" />
+        </EntityType>
+        <EntityType Name="Conti">
+          <Key>
+            <PropertyRef Name="ContoID" />
+          </Key>
+          <Property Name="ContoID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="Titolo" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TipoTransazioni">
+          <Key>
+            <PropertyRef Name="TipoTransazioneID" />
+          </Key>
+          <Property Name="TipoTransazioneID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="EntrataUscita" Type="bit" />
+        </EntityType>
+        <EntityType Name="TransazioniConto">
+          <Key>
+            <PropertyRef Name="TransazioneID" />
+          </Key>
+          <Property Name="TransazioneID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ContoID" Type="int" Nullable="false" />
+          <Property Name="TipoTransazioneID" Type="int" />
+          <Property Name="Importo" Type="money" />
+          <Property Name="DataTransazione" Type="datetime" />
+          <Property Name="Descrizione" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="UserProfile">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="56" Nullable="false" />
+        </EntityType>
+        <EntityType Name="webpages_Membership">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="ConfirmationToken" Type="nvarchar" MaxLength="128" />
+          <Property Name="IsConfirmed" Type="bit" />
+          <Property Name="LastPasswordFailureDate" Type="datetime" />
+          <Property Name="PasswordFailuresSinceLastSuccess" Type="int" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="PasswordChangedDate" Type="datetime" />
+          <Property Name="PasswordSalt" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="PasswordVerificationToken" Type="nvarchar" MaxLength="128" />
+          <Property Name="PasswordVerificationTokenExpirationDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="webpages_OAuthMembership">
+          <Key>
+            <PropertyRef Name="Provider" />
+            <PropertyRef Name="ProviderUserId" />
+          </Key>
+          <Property Name="Provider" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="ProviderUserId" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="webpages_Roles">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="256" Nullable="false" />
+        </EntityType>
+        <EntityType Name="webpages_UsersInRoles">
+          <Key>
+            <PropertyRef Name="UserId" />
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_AddebitoTransazioni_TipoTransazioni">
+          <End Role="TipoTransazioni" Type="Self.TipoTransazioni" Multiplicity="0..1" />
+          <End Role="AddebitoTransazioni" Type="Self.AddebitoTransazioni" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoTransazioni">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Principal>
+            <Dependent Role="AddebitoTransazioni">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Conti_UserProfile">
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="1" />
+          <End Role="Conti" Type="Self.Conti" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Conti">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_RoleId">
+          <End Role="webpages_Roles" Type="Self.webpages_Roles" Multiplicity="1" />
+          <End Role="webpages_UsersInRoles" Type="Self.webpages_UsersInRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="webpages_Roles">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="webpages_UsersInRoles">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TipoTransazioni_UserProfile">
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="0..1" />
+          <End Role="TipoTransazioni" Type="Self.TipoTransazioni" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="TipoTransazioni">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransazioniConto_Conti">
+          <End Role="Conti" Type="Self.Conti" Multiplicity="1" />
+          <End Role="TransazioniConto" Type="Self.TransazioniConto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conti">
+              <PropertyRef Name="ContoID" />
+            </Principal>
+            <Dependent Role="TransazioniConto">
+              <PropertyRef Name="ContoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransazioniConto_TipoTransazioni">
+          <End Role="TipoTransazioni" Type="Self.TipoTransazioni" Multiplicity="0..1" />
+          <End Role="TransazioniConto" Type="Self.TransazioniConto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoTransazioni">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Principal>
+            <Dependent Role="TransazioniConto">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_UserId">
+          <End Role="UserProfile" Type="Self.UserProfile" Multiplicity="1" />
+          <End Role="webpages_UsersInRoles" Type="Self.webpages_UsersInRoles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="webpages_UsersInRoles">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MyMoneyModelStoreContainer">
+          <EntitySet Name="AddebitoTransazioni" EntityType="Self.AddebitoTransazioni" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Conti" EntityType="Self.Conti" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TipoTransazioni" EntityType="Self.TipoTransazioni" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TransazioniConto" EntityType="Self.TransazioniConto" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="webpages_Membership" EntityType="Self.webpages_Membership" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="webpages_OAuthMembership" EntityType="Self.webpages_OAuthMembership" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="webpages_Roles" EntityType="Self.webpages_Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="webpages_UsersInRoles" EntityType="Self.webpages_UsersInRoles" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_AddebitoTransazioni_TipoTransazioni" Association="Self.FK_AddebitoTransazioni_TipoTransazioni">
+            <End Role="TipoTransazioni" EntitySet="TipoTransazioni" />
+            <End Role="AddebitoTransazioni" EntitySet="AddebitoTransazioni" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Conti_UserProfile" Association="Self.FK_Conti_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="Conti" EntitySet="Conti" />
+          </AssociationSet>
+          <AssociationSet Name="fk_RoleId" Association="Self.fk_RoleId">
+            <End Role="webpages_Roles" EntitySet="webpages_Roles" />
+            <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TipoTransazioni_UserProfile" Association="Self.FK_TipoTransazioni_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="TipoTransazioni" EntitySet="TipoTransazioni" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransazioniConto_Conti" Association="Self.FK_TransazioniConto_Conti">
+            <End Role="Conti" EntitySet="Conti" />
+            <End Role="TransazioniConto" EntitySet="TransazioniConto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransazioniConto_TipoTransazioni" Association="Self.FK_TransazioniConto_TipoTransazioni">
+            <End Role="TipoTransazioni" EntitySet="TipoTransazioni" />
+            <End Role="TransazioniConto" EntitySet="TransazioniConto" />
+          </AssociationSet>
+          <AssociationSet Name="fk_UserId" Association="Self.fk_UserId">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MyMoneyModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+        <EntityType Name="AddebitoTransazioni">
+          <Key>
+            <PropertyRef Name="AddebitoTransazioneID" />
+          </Key>
+          <Property Name="AddebitoTransazioneID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TipoTransazioneID" Type="Int32" />
+          <NavigationProperty Name="TipoTransazioni" Relationship="Self.FK_AddebitoTransazioni_TipoTransazioni" FromRole="AddebitoTransazioni" ToRole="TipoTransazioni" />
+        </EntityType>
+        <EntityType Name="Conti">
+          <Key>
+            <PropertyRef Name="ContoID" />
+          </Key>
+          <Property Name="ContoID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="Titolo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TransazioniConto" Relationship="Self.FK_TransazioniConto_Conti" FromRole="Conti" ToRole="TransazioniConto" />
+          <NavigationProperty Name="UserProfile" Relationship="MyMoneyModel.FK_Conti_UserProfile" FromRole="Conti" ToRole="UserProfile" />
+        </EntityType>
+        <EntityType Name="TipoTransazioni">
+          <Key>
+            <PropertyRef Name="TipoTransazioneID" />
+          </Key>
+          <Property Name="TipoTransazioneID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="EntrataUscita" Type="Boolean" />
+          <NavigationProperty Name="AddebitoTransazioni" Relationship="Self.FK_AddebitoTransazioni_TipoTransazioni" FromRole="TipoTransazioni" ToRole="AddebitoTransazioni" />
+          <NavigationProperty Name="TransazioniConto" Relationship="Self.FK_TransazioniConto_TipoTransazioni" FromRole="TipoTransazioni" ToRole="TransazioniConto" />
+          <NavigationProperty Name="UserProfile" Relationship="MyMoneyModel.FK_TipoTransazioni_UserProfile" FromRole="TipoTransazioni" ToRole="UserProfile" />
+        </EntityType>
+        <EntityType Name="TransazioniConto">
+          <Key>
+            <PropertyRef Name="TransazioneID" />
+          </Key>
+          <Property Name="TransazioneID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ContoID" Type="Int32" Nullable="false" />
+          <Property Name="TipoTransazioneID" Type="Int32" />
+          <Property Name="Importo" Type="Decimal" Precision="19" Scale="4" />
+          <Property Name="DataTransazione" Type="DateTime" Precision="3" />
+          <Property Name="Descrizione" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Conti" Relationship="Self.FK_TransazioniConto_Conti" FromRole="TransazioniConto" ToRole="Conti" />
+          <NavigationProperty Name="TipoTransazioni" Relationship="Self.FK_TransazioniConto_TipoTransazioni" FromRole="TransazioniConto" ToRole="TipoTransazioni" />
+        </EntityType>
+        <Association Name="FK_AddebitoTransazioni_TipoTransazioni">
+          <End Role="TipoTransazioni" Type="Self.TipoTransazioni" Multiplicity="0..1" />
+          <End Role="AddebitoTransazioni" Type="Self.AddebitoTransazioni" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoTransazioni">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Principal>
+            <Dependent Role="AddebitoTransazioni">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransazioniConto_Conti">
+          <End Role="Conti" Type="Self.Conti" Multiplicity="1" />
+          <End Role="TransazioniConto" Type="Self.TransazioniConto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Conti">
+              <PropertyRef Name="ContoID" />
+            </Principal>
+            <Dependent Role="TransazioniConto">
+              <PropertyRef Name="ContoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TransazioniConto_TipoTransazioni">
+          <End Role="TipoTransazioni" Type="Self.TipoTransazioni" Multiplicity="0..1" />
+          <End Role="TransazioniConto" Type="Self.TransazioniConto" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TipoTransazioni">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Principal>
+            <Dependent Role="TransazioniConto">
+              <PropertyRef Name="TipoTransazioneID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="MyMoneyEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AddebitoTransazioni" EntityType="Self.AddebitoTransazioni" />
+          <EntitySet Name="Conti" EntityType="Self.Conti" />
+          <EntitySet Name="TipoTransazioni" EntityType="Self.TipoTransazioni" />
+          <EntitySet Name="TransazioniConto" EntityType="Self.TransazioniConto" />
+          <AssociationSet Name="FK_AddebitoTransazioni_TipoTransazioni" Association="Self.FK_AddebitoTransazioni_TipoTransazioni">
+            <End Role="TipoTransazioni" EntitySet="TipoTransazioni" />
+            <End Role="AddebitoTransazioni" EntitySet="AddebitoTransazioni" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransazioniConto_Conti" Association="Self.FK_TransazioniConto_Conti">
+            <End Role="Conti" EntitySet="Conti" />
+            <End Role="TransazioniConto" EntitySet="TransazioniConto" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TransazioniConto_TipoTransazioni" Association="Self.FK_TransazioniConto_TipoTransazioni">
+            <End Role="TipoTransazioni" EntitySet="TipoTransazioni" />
+            <End Role="TransazioniConto" EntitySet="TransazioniConto" />
+          </AssociationSet>
+          <EntitySet Name="UserProfile" EntityType="MyMoneyModel.Users" />
+          <EntitySet Name="webpages_Membership" EntityType="MyMoneyModel.webpages_Membership" />
+          <EntitySet Name="webpages_OAuthMembership" EntityType="MyMoneyModel.webpages_OAuthMembership" />
+          <EntitySet Name="webpages_Roles" EntityType="MyMoneyModel.webpages_Roles" />
+          <AssociationSet Name="webpages_UsersInRoles" Association="MyMoneyModel.webpages_UsersInRoles">
+            <End Role="webpages_Roles" EntitySet="webpages_Roles" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Conti_UserProfile" Association="MyMoneyModel.FK_Conti_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="Conti" EntitySet="Conti" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TipoTransazioni_UserProfile" Association="MyMoneyModel.FK_TipoTransazioni_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="TipoTransazioni" EntitySet="TipoTransazioni" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="56" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="webpages_Roles" Relationship="MyMoneyModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
+          <NavigationProperty Name="Conti" Relationship="MyMoneyModel.FK_Conti_UserProfile" FromRole="UserProfile" ToRole="Conti" />
+          <NavigationProperty Name="TipoTransazioni" Relationship="MyMoneyModel.FK_TipoTransazioni_UserProfile" FromRole="UserProfile" ToRole="TipoTransazioni" />
+        </EntityType>
+        <EntityType Name="webpages_Membership">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="ConfirmationToken" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="IsConfirmed" Type="Boolean" />
+          <Property Name="LastPasswordFailureDate" Type="DateTime" Precision="3" />
+          <Property Name="PasswordFailuresSinceLastSuccess" Type="Int32" Nullable="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordChangedDate" Type="DateTime" Precision="3" />
+          <Property Name="PasswordSalt" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordVerificationToken" Type="String" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="PasswordVerificationTokenExpirationDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="webpages_OAuthMembership">
+          <Key>
+            <PropertyRef Name="Provider" />
+            <PropertyRef Name="ProviderUserId" />
+          </Key>
+          <Property Name="Provider" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ProviderUserId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="webpages_Roles">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="UserProfile" Relationship="MyMoneyModel.webpages_UsersInRoles" FromRole="webpages_Roles" ToRole="UserProfile" />
+        </EntityType>
+        <Association Name="webpages_UsersInRoles">
+          <End Type="MyMoneyModel.webpages_Roles" Role="webpages_Roles" Multiplicity="*" />
+          <End Type="MyMoneyModel.Users" Role="UserProfile" Multiplicity="*" />
+        </Association>
+        <Association Name="FK_Conti_UserProfile">
+          <End Type="MyMoneyModel.Users" Role="UserProfile" Multiplicity="1" />
+          <End Type="MyMoneyModel.Conti" Role="Conti" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Conti">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_TipoTransazioni_UserProfile">
+          <End Type="MyMoneyModel.Users" Role="UserProfile" Multiplicity="0..1" />
+          <End Type="MyMoneyModel.TipoTransazioni" Role="TipoTransazioni" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="TipoTransazioni">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MyMoneyModelStoreContainer" CdmEntityContainer="MyMoneyEntities">
+          <EntitySetMapping Name="AddebitoTransazioni">
+            <EntityTypeMapping TypeName="MyMoneyModel.AddebitoTransazioni">
+              <MappingFragment StoreEntitySet="AddebitoTransazioni">
+                <ScalarProperty Name="AddebitoTransazioneID" ColumnName="AddebitoTransazioneID" />
+                <ScalarProperty Name="TipoTransazioneID" ColumnName="TipoTransazioneID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Conti">
+            <EntityTypeMapping TypeName="MyMoneyModel.Conti">
+              <MappingFragment StoreEntitySet="Conti">
+                <ScalarProperty Name="ContoID" ColumnName="ContoID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Titolo" ColumnName="Titolo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TipoTransazioni">
+            <EntityTypeMapping TypeName="MyMoneyModel.TipoTransazioni">
+              <MappingFragment StoreEntitySet="TipoTransazioni">
+                <ScalarProperty Name="TipoTransazioneID" ColumnName="TipoTransazioneID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="EntrataUscita" ColumnName="EntrataUscita" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TransazioniConto">
+            <EntityTypeMapping TypeName="MyMoneyModel.TransazioniConto">
+              <MappingFragment StoreEntitySet="TransazioniConto">
+                <ScalarProperty Name="TransazioneID" ColumnName="TransazioneID" />
+                <ScalarProperty Name="ContoID" ColumnName="ContoID" />
+                <ScalarProperty Name="TipoTransazioneID" ColumnName="TipoTransazioneID" />
+                <ScalarProperty Name="Importo" ColumnName="Importo" />
+                <ScalarProperty Name="DataTransazione" ColumnName="DataTransazione" />
+                <ScalarProperty Name="Descrizione" ColumnName="Descrizione" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserProfile">
+            <EntityTypeMapping TypeName="MyMoneyModel.Users">
+              <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="webpages_Membership">
+            <EntityTypeMapping TypeName="MyMoneyModel.webpages_Membership">
+              <MappingFragment StoreEntitySet="webpages_Membership">
+                <ScalarProperty Name="PasswordVerificationTokenExpirationDate" ColumnName="PasswordVerificationTokenExpirationDate" />
+                <ScalarProperty Name="PasswordVerificationToken" ColumnName="PasswordVerificationToken" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="PasswordChangedDate" ColumnName="PasswordChangedDate" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="PasswordFailuresSinceLastSuccess" ColumnName="PasswordFailuresSinceLastSuccess" />
+                <ScalarProperty Name="LastPasswordFailureDate" ColumnName="LastPasswordFailureDate" />
+                <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
+                <ScalarProperty Name="ConfirmationToken" ColumnName="ConfirmationToken" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="webpages_OAuthMembership">
+            <EntityTypeMapping TypeName="MyMoneyModel.webpages_OAuthMembership">
+              <MappingFragment StoreEntitySet="webpages_OAuthMembership">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ProviderUserId" ColumnName="ProviderUserId" />
+                <ScalarProperty Name="Provider" ColumnName="Provider" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="webpages_Roles">
+            <EntityTypeMapping TypeName="MyMoneyModel.webpages_Roles">
+              <MappingFragment StoreEntitySet="webpages_Roles">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="webpages_UsersInRoles" TypeName="MyMoneyModel.webpages_UsersInRoles" StoreEntitySet="webpages_UsersInRoles">
+            <EndProperty Name="UserProfile">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="webpages_Roles">
+              <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2008/10/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Nessuno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
